@@ -89,8 +89,9 @@ from Patients as pat
 Left join CTE_Flu_Shot_2022 as flu on pat.id = flu.patient 
 
 
--- <______________________________________________> *** This is what is used for Tableau *** <_____________________________________________________>
+-- <______________________________________________> *** Code used to set up dataset for Tableau *** <_____________________________________________________>
 
+-- Data check
 Select *
 from Patients as pat
 
@@ -103,10 +104,10 @@ Set DEATHDATE = null
 Where DEATHDATE = '\N'
 
 /*
-<<<<< -------------------------------------------**Set up queries to pull dataset**------------------------------------------->>>>>
+<<<<< -------------------------------------------**Code to set up the queries to pull dataset**------------------------------------------->>>>>
 */
 
-/* Objectives
+/* Objectives:
 Come up with flu shots dashoard for 2022 that does the folling:
 
 1.) Total % of patients getting flu shots stratified by
@@ -184,11 +185,3 @@ where 1=1
 	and pat.id in (select PatientID from CTE_Active_Patients)
 --group by ID, First, Last, Birthdate, Race, County, flu.First_Immunization_Shot, flu.Earliest_Flu_Shot_2022, Flu_Shot_2022
 Order by 1
-
-
-
-
-
-
-
-
