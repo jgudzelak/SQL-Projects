@@ -1,3 +1,4 @@
+--Quick glance
 select *
 from CovidDeaths
 Order By 3,4
@@ -5,9 +6,6 @@ Order By 3,4
 Select *
 From CovidVaccinations
 Order By 3,4
-
-
--- Select Data to use
 
 Select Location,   Convert( Varchar(10),cast([date] as date), 101) [Date], Total_Cases, New_Cases, total_deaths, Population
 From [Covid Project].[dbo].[CovidDeaths]
