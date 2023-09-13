@@ -1,5 +1,5 @@
 /* Objectives
-Come up with flu shots dashoard for 2022 that does the folling:
+Pull data to create flu shots dashboard for 2022 that does the folling:
 
 1.) Total % of patients getting flu shots stratified by
 	a.) Age 
@@ -104,24 +104,7 @@ Set DEATHDATE = null
 Where DEATHDATE = '\N'
 
 /*
-<<<<< -------------------------------------------**Code to set up the queries to pull dataset**------------------------------------------->>>>>
-*/
-
-/* Objectives:
-Come up with flu shots dashoard for 2022 that does the folling:
-
-1.) Total % of patients getting flu shots stratified by
-	a.) Age 
-	b.) Race
-	c.) County (on a map)
-	d.) Overall
-2.) Running total of flu shots over the course of 2022
-3.) Total number of flu shots given in 2022
-4.) A list of patients that show whether of not they received the flu shot
-
-Requirements:
-
-Patients must have been "Active at our hospital"
+<<<<< -------------------------------------------**Code to set up queries to pull dataset for dashboard**------------------------------------------->>>>>
 */
 
 -- Setting up Common Table Expression to list patients that were active and older than 6 months
@@ -157,15 +140,15 @@ Select distinct pat.ID PatientID
 	  ,pat.Birthdate
 	  ,AP.Age
 	  ,Case
-			when Age is null then 'Unknwon'
-			when Age between 0 and 17 then '0-17'
-			When Age between 18 and 24	then '18-24'
-			When Age between 25 and 34	then '25-34'
-			When Age between 35 and 44	then '35-44'
-			When Age between 45 and 54	then '45-54'
-			When Age between 55 and 64	then '55-64'
-			When Age >=65 then '65+'
-			Else 'Unknown'
+		when Age is null then 'Unknwon'
+		when Age between 0 and 17 then '0-17'
+		When Age between 18 and 24 then '18-24'
+		When Age between 25 and 34 then '25-34'
+		When Age between 35 and 44 then '35-44'
+		When Age between 45 and 54 then '45-54'
+		When Age between 55 and 64 then '55-64'
+		When Age >=65 then '65+'
+		Else 'Unknown'
 	   End as AgeRange
 	  ,Last_Value(pat.race) over (order by pat.race) Race
 	  ,pat.County
