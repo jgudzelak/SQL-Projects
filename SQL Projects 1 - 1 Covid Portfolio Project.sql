@@ -7,7 +7,7 @@ From CovidVaccinations
 Order By 3,4
 
 
--- Select Data that we are going to be using
+-- Select Data to use
 
 Select Location,   Convert( Varchar(10),cast([date] as date), 101) [Date], Total_Cases, New_Cases, total_deaths, Population
 From [Covid Project].[dbo].[CovidDeaths]
@@ -35,14 +35,14 @@ Where location like '%States%'
 Order By 2
 
 
--- Looking at the Total Cases vs Total Population
+-- Looks at the Total Cases vs Total Population
 Select Location,   [Date], population, Total_Cases,  (total_cases/population)*100 as Percent_Deaths
 From [Covid Project].[dbo].[CovidDeaths]
 --Where location like '%States%'
 Order By 1,2
 
 
--- Looking at the Countries with highest Infection Rate compared to Population
+-- Looks at the Countries with highest Infection Rate compared to Population
 Select Location, population, Max(Total_Cases) HighestInfectionCount,  Max((total_cases/population))*100 PercentPopulationInfected
 From [Covid Project].[dbo].[CovidDeaths]
 --Where location like '%States%'
@@ -50,7 +50,7 @@ Group By location, population
 Order By 4 Desc
 
 
--- Looking at the Countries with highest Death counts compared to Population
+-- Looks at the Countries with highest Death counts compared to Population
 Select Location, population, Max(Cast(total_deaths as Int)) HighestDeathCounts,  Max((total_deaths/population))*100 PercentDeathByPopulation
 From [Covid Project].[dbo].[CovidDeaths]
 Where continent is not null	
@@ -63,7 +63,7 @@ Where continent is  null
 Order By 3,4
 
 
--- LET'S use a Temp table to set up the calculation percentage
+-- Temp table to set up the calculation percentage
 Drop Table if exists #TempDeathCountsByCont
 Create table #TempDeathCountsByCont
 (
@@ -84,14 +84,14 @@ From #TempDeathCountsByCont
 Order By 3 Desc
 
 
--- LET'S BREAK THINGS DOWN BY CONTINENT -Show Continents with Highest death count by population
+-- Shows Continents with Highest death count by population
 Select continent, Max(Cast(total_deaths as Int)) HighestDeathCounts
 From [Covid Project].[dbo].[CovidDeaths]
 Where continent is not null	
 Group By continent
 Order By 2 Desc
 
--- LET'S BREAK THINGS DOWN BY Location
+-- Breaks things down by Location
 Select Location, Max(Cast(total_deaths as Int)) HighestDeathCounts
 From [Covid Project].[dbo].[CovidDeaths]
 Where continent is null	
@@ -99,7 +99,7 @@ Group By location
 Order By 2 Desc
 
 
--- Show Continents with Highest death count by population
+-- Shows Continents with Highest death count by population
 Select continent, population, Max(Total_Cases) HighestInfectionCount,  Max((total_cases/population))*100 PercentPopulationInfected
 From [Covid Project].[dbo].[CovidDeaths]
 --Where location like '%States%'
@@ -107,7 +107,7 @@ Group By continent, population
 Order By 4 Desc
 
 
--- Looking at the Countries with highest Death counts compared to Population
+-- Looks at the Countries with highest death counts compared to Population
 Select continent, population, Max(Cast(total_deaths as Int)) HighestDeathCounts,  Max((total_deaths/population))*100 PercentDeathByPopulation
 From [Covid Project].[dbo].[CovidDeaths]
 Where continent is not null	
@@ -122,24 +122,28 @@ Where continent is not null
 Group By continent, Location, population
 Order By 1
 
---Global Numbers
+--Global Numbers by date
 Select Date, Sum(New_Cases) TotalCases, Sum(Cast(New_Deaths as int)) TotalDeaths, (Sum(Cast(New_Deaths as int))/Sum(New_Cases))*100 as DeathPercent
 from CovidDeaths
 Where continent is not null
 Group By Date
 Order by 1,2
 
+--Global Numbers by Location
 Select Location, Sum(New_Cases) TotalCases, Sum(Cast(New_Deaths as int)) TotalDeaths, (Sum(Cast(New_Deaths as int))/Sum(New_Cases))*100 as DeathPercent
 from CovidDeaths
 Where continent is not null
 Group By Location
 Order by 1,2
 
+
+--Global Numbers New Cases
 Select Sum(New_Cases) TotalCases, Sum(Cast(New_Deaths as int)) TotalDeaths, (Sum(Cast(New_Deaths as int))/Sum(New_Cases))*100 as DeathPercent
 from CovidDeaths
 Where continent is not null
 Order by 1,2
 
+	
 -- Joining CovidDeaths tbl and CovidVac tbl
 Select *
 From [Covid Project]..CovidDeaths dea
@@ -155,8 +159,7 @@ join [Covid Project]..CovidVaccinations vac
 Where dea.continent is not null
 Order by 2,3
 
--- Looking at Total Population vs Vaccinations with running sum
-
+-- Looking at Total Population vs Vaccinations with running sum - cumulative counts
 Select dea.continent, dea.location, dea.date, dea.population, vac.new_vaccinations
 , sum(cast(vac.new_Vaccinations as int)) over (Partition by dea.location order by dea.location, dea.date) RollingVaccinations
 , dea.new_cases
